@@ -15,7 +15,15 @@ def main():
 
 @app.route('/choice/<planet_name>')
 def choice(planet_name):
-    return f'''<!doctype html>
+    if planet_name == "марс":
+        phrases = ["На ней много необходимых ресурсов", "На ней есть вода и атмосфера",
+                   "На ней есть небольшое магнитное поле", "Она красива!"]
+    elif planet_name == "венера":
+        phrases = ["Её можно увидеть с Земли", "Весить на ней мы будем меньше.",
+                   "На её поверхности расположены три плоскогорья.", "Она прекрасна!"]
+    else:
+        phrases = ["нет описания"]
+    content = f'''<!doctype html>
                     <html lang="en">
                       <head>
                         <meta charset="utf-8">
@@ -27,20 +35,16 @@ def choice(planet_name):
                       </head>
                       <body>
                         <h1>Мое предложение: {planet_name}</h1>
-                        <div class="alert alert-primary" role="alert">
-                          На ней много необходимых ресурсов
-                        </div>
-                        <div class="alert alert-secondary" role="alert">
-                          На ней есть вода и атмосфера
-                        </div>
-                        <div class="alert alert-success" role="alert">
-                          На ней есть небольшое магнитное поле
-                        </div>
-                        <div class="alert alert-danger" role="alert">
-                          Она красива!
-                        </div>
-                      </body>
-                    </html>'''
+                        '''
+
+    classes = ["alert alert-danger", "alert alert-primary", "alert alert-secondary", "alert alert-success"]
+    for i in range(len(phrases)):
+        content += f'''
+                        <div class="{classes[i]}" role="alert">
+                          {phrases[i]}
+                        </div> '''
+    content += "</body></html>"
+    return content
 
 
 @app.route('/results/<nickname>/<int:level>/<float:rating>')
