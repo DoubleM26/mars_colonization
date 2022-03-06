@@ -28,5 +28,21 @@ def list_prof(li):
     return render_template("list_prof.html", li=li)
 
 
+@app.route('/answer')
+@app.route('/auto_answer')
+def answer():
+    data = {
+        "title": "Анкета",
+        "surname": "Яблоков",
+        "name": "Андрей",
+        "education": "Среднее",
+        "profession": "Астронавт",
+        "sex": "вечером",
+        "motivation": "Всегда мечтал застрять на Марсе!",
+        "ready": True
+    }
+    return render_template("auto_answer.html", data=data, title=data["title"])
+
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
