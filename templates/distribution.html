@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for item in astronauts %}
+{% if loop.first %}
+    <div>{{item + " - Каюта № " + str(loop.index) + " - капитан"}}</div>
+{% else %}
+   <div>{{item + " - Каюта № " + str(loop.index)}}</div>
+{% endif %}
+{% endfor %}
+{% endblock %}
