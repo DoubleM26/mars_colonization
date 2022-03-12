@@ -3,6 +3,7 @@ from flask import Flask, url_for, request, render_template, redirect
 from data import db_session
 from forms.login import LoginForm
 from forms.register import RegisterForm
+from forms.job import JobsForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from data.user import User
 from data.jobs import Jobs
@@ -21,11 +22,9 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    print(current_user.is_authenticated)
     if current_user.is_authenticated:
         db_sess = db_session.create_session()
         jobs = db_sess.query(Jobs).all()
-        print(jobs)
     else:
         jobs = []
     return render_template("index.html", jobs=jobs)
@@ -75,6 +74,27 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route('/jobs',  methods=['GET', 'POST'])
+@login_required
+def add_jobs():
+    form = JobsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        jobs = Jobs()
+        jobs.job = form.title.data
+
+        jobs.team_leader = form.team_leader.data
+        jobs.work_size = form.work_size.data
+        jobs.collaborators = form.collaborators.data
+        jobs.is_finished = form.is_finished.data
+
+        db_sess.add(jobs)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('jobs.html', title='Добавление работы',
+                           form=form)
 
 
 # @app.route("/index/<title>")
