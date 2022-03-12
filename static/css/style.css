@@ -18,7 +18,12 @@ form.login_form {
     display: flex;
 }
 
-h4 {
-    color: gray;
-    padding-left: 20px;
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.table_header {
+    margin-top: 20px;
 }

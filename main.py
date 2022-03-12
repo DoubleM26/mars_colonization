@@ -24,10 +24,16 @@ def load_user(user_id):
 def index():
     if current_user.is_authenticated:
         db_sess = db_session.create_session()
-        jobs = db_sess.query(Jobs).all()
+        jobs = list(db_sess.query(Jobs).all())
     else:
         jobs = []
-    return render_template("index.html", jobs=jobs)
+    for job in jobs:
+        team_leader = db_sess.query(User).filter(User.id == job.team_leader).first()
+        if not team_leader:
+            job.team_leader = "Не найден"
+        else:
+            job.team_leader = team_leader.name + " " + team_leader.surname
+    return render_template("index.html", jobs=jobs, str=str)
 
 
 @app.route('/logout')
@@ -95,71 +101,6 @@ def add_jobs():
         return redirect('/')
     return render_template('jobs.html', title='Добавление работы',
                            form=form)
-
-
-# @app.route("/index/<title>")
-# def index(title):
-#     return render_template("base.html", title=title)
-
-
-@app.route("/training/<prof>")
-def training(prof):
-    if "инженер" in prof:
-        img = "..\static\img\инженер.png"
-    elif "строитель" in prof:
-        img = "..\static\img\строитель.png"
-    else:
-        img = "..\static\img\другие.png"
-    if prof in ["врач", "химик", "физик", "астронавт"]:
-        text = "Научные симуляторы"
-    else:
-        text = "Инженерные тренажеры"
-    return render_template("training.html", img=img, text=text)
-
-
-@app.route("/list_prof/<li>")
-def list_prof(li):
-    return render_template("list_prof.html", li=li)
-
-
-@app.route('/answer')
-@app.route('/auto_answer')
-def answer():
-    data = {
-        "title": "Анкета",
-        "surname": "Яблоков",
-        "name": "Андрей",
-        "education": "Среднее",
-        "profession": "Астронавт",
-        "sex": "вечером",
-        "motivation": "Всегда мечтал застрять на Марсе!",
-        "ready": True
-    }
-    return render_template("auto_answer.html", data=data, title=data["title"])
-
-
-@app.route("/distribution")
-def distribution():
-    astronauts = ["Ридли Скотт", "Энди Уир", "Марк Уотни", "Венката Капур", "Тедди Сандерс", "Шон Бин"]
-    return render_template('distribution.html', astronauts=astronauts, str=str)
-
-
-@app.route("/table/<sex>/<age>")
-def table(sex, age):
-    age = int(age)
-    if age < 21:
-        img = "../../static/img/kid.jpg"
-    else:
-        img = "../../static/img/adult.jpg"
-
-    color = round(age * 255 / 100)
-    color = 255 - color
-    if sex == "female":
-        color = f"rgb(255, {color}, {color})"
-    else:
-        color = f"rgb({color}, {color}, 255)"
-
-    return render_template('table.html', img=img, color=color)
 
 
 if __name__ == '__main__':
