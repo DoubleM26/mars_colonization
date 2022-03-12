@@ -3,8 +3,9 @@ from flask import Flask, url_for, request, render_template, redirect
 from data import db_session
 from forms.login import LoginForm
 from forms.register import RegisterForm
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from data.user import User
+from data.jobs import Jobs
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -20,7 +21,14 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template("base.html")
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated:
+        db_sess = db_session.create_session()
+        jobs = db_sess.query(Jobs).all()
+        print(jobs)
+    else:
+        jobs = []
+    return render_template("index.html", jobs=jobs)
 
 
 @app.route('/logout')
