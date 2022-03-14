@@ -32,7 +32,7 @@ def index():
         if not team_leader:
             job.team_leader = "Не найден"
         else:
-            job.team_leader = team_leader.name + " " + team_leader.surname
+            job.team_leader = team_leader.name
     return render_template("index.html", jobs=jobs, str=str)
 
 
