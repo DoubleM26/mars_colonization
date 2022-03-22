@@ -8,6 +8,7 @@ class Jobs(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'jobs'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    owner_id = sqlalchemy.Column(sqlalchemy.Integer)
     team_leader = sqlalchemy.Column(sqlalchemy.Integer)
     job = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     work_size = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
