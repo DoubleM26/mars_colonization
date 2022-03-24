@@ -1,4 +1,4 @@
-from flask import Flask, abort, request, render_template, redirect
+from flask import Flask, abort, request, render_template, redirect, make_response, jsonify
 
 from data import db_session, jobs_api
 from forms.login import LoginForm
@@ -156,6 +156,11 @@ def jobs_delete(id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 if __name__ == '__main__':
