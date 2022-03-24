@@ -1,19 +1,44 @@
-from requests import get
+from requests import post, get
 
-test_1 = get('http://localhost:8080/api/jobs').json()
+test_1 = post('http://localhost:8080/api/jobs', json={
+    "team_leader": 1,
+    "job": "aboba",
+    "work_size": 24,
+    "collaborators": "2, 3",
+    "is_finished": False,
+    "start_date": "22/04",
+    "end_date": "21/05"
+}).json()
 
-if "jobs" in test_1:
+if get("http://localhost:8080/api/jobs").json()["jobs"][-1]["job"] == "aboba":
+    print("ok")
+else:
+    print("test failed")
+
+test_2 = post('http://localhost:8080/api/jobs').json()  # отсутсвуют передаваемые данные
+if test_2["error"] == "Empty request":
     print("ok")
 
-test_2 = get('http://localhost:8080/api/jobs/1').json()
-if "job" in test_2:
+test_3 = post('http://localhost:8080/api/jobs', json={  # передаем уже существующий ид
+    "team_leader": 1,
+    "job": "aboba",
+    "work_size": 24,
+    "collaborators": "2, 3",
+    "is_finished": False,
+    "start_date": "22/04",
+    "end_date": "21/05",
+    "id": 1
+}).json()
+
+if test_3["error"] == "Id already exists":
     print("ok")
 
-test_3 = get('http://localhost:8080/api/jobs/2').json()
-if test_3["error"] == "Not found":
-    print("ok")
+test_4 = post('http://localhost:8080/api/jobs', json={  # не передаем некоторые поля
+    "collaborators": "2, 3",
+    "is_finished": False,
+    "start_date": "22/04",
+    "end_date": "21/05"
+}).json()
 
-test_4 = get('http://localhost:8080/api/jobs/aboba').json()
-if test_4["error"] == "Not found":
+if test_4["error"] == "Bad request":
     print("ok")
-

@@ -43,7 +43,7 @@ def create_jobs():
     elif not all(key in request.json for key in
                  ['team_leader', 'job', 'work_size', 'collaborators', 'start_date', "end_date", "is_finished"]):
         return jsonify({'error': 'Bad request'})
-    elif db_sess.query(Jobs).get(request.json["id"]):
+    elif "id" in request.json and db_sess.query(Jobs).get(request.json["id"]):
         return jsonify({"error": "Id already exists"})
     jobs = Jobs(
         team_leader=request.json['team_leader'],
