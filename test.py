@@ -1,44 +1,16 @@
-from requests import post, get
+from requests import post, get, delete
 
-test_1 = post('http://localhost:8080/api/jobs', json={
-    "team_leader": 1,
-    "job": "aboba",
-    "work_size": 24,
-    "collaborators": "2, 3",
-    "is_finished": False,
-    "start_date": "22/04",
-    "end_date": "21/05"
-}).json()
+test_1 = delete('http://localhost:8080/api/jobs/1').json()
 
-if get("http://localhost:8080/api/jobs").json()["jobs"][-1]["job"] == "aboba":
+if get("http://localhost:8080/api/jobs/1").json()["error"] == "Not found":
     print("ok")
 else:
     print("test failed")
 
-test_2 = post('http://localhost:8080/api/jobs').json()  # отсутсвуют передаваемые данные
-if test_2["error"] == "Empty request":
+test_2 = delete('http://localhost:8080/api/jobs/aboba').json()  # передача строки вместо числа
+if test_2["error"] == "Not found":
     print("ok")
 
-test_3 = post('http://localhost:8080/api/jobs', json={  # передаем уже существующий ид
-    "team_leader": 1,
-    "job": "aboba",
-    "work_size": 24,
-    "collaborators": "2, 3",
-    "is_finished": False,
-    "start_date": "22/04",
-    "end_date": "21/05",
-    "id": 1
-}).json()
-
-if test_3["error"] == "Id already exists":
-    print("ok")
-
-test_4 = post('http://localhost:8080/api/jobs', json={  # не передаем некоторые поля
-    "collaborators": "2, 3",
-    "is_finished": False,
-    "start_date": "22/04",
-    "end_date": "21/05"
-}).json()
-
-if test_4["error"] == "Bad request":
+test_3 = delete('http://localhost:8080/api/jobs/999').json()  # передача ид несуществующей работы
+if test_2["error"] == "Not found":
     print("ok")
